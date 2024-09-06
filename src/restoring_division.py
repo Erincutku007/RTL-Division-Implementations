@@ -25,6 +25,7 @@ def leading_zeros(binary):
             mask >>1
         else:
             return index
+    return 0
         
 a = random.randint(0, 10000)
 b = random.randint(0, 50)

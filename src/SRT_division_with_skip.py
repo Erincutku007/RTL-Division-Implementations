@@ -25,7 +25,7 @@ def leading_zeros(binary):
             mask >>1
         else:
             return index
-        return 0
+    return 0
 def redundant_to_standart_binary(number):
     res_reversed = reversed(number) #this is needed because enumerate starts indexing the list from the
     result = 0
@@ -58,8 +58,10 @@ def SRT_divide(a,b):
     s_i = a_shifted
     #b_shifted_binary = convert_to_binary(b_shifted)
     
-    
-    for i in range(lenght):
+    #to accomodate the variable shift and need for variable iteration amount 
+    #(it can be shortened as the skips are detected) while loop is used.
+    i = 0
+    while(i<lenght):
         s_i_binary = convert_to_binary(s_i)
         shamt = (a_zeros - 1) + i
         remainders.append(s_i >> shamt) #since we are using an redundant representation we have to
@@ -78,23 +80,48 @@ def SRT_divide(a,b):
         #This part of the division will need a priotiy encoder circuit and shift register with
         #variable shamt
         
-        leading_zeros_amt = leading_zeros(s_i)
+        #We will take 1's complement of the numbers so we can find the number of leading zeros or
+        #ones with a single priority encoder. when the number is positive the priority encoder can 
+        #directly find the number of leading zeros. When the number of negative, to find the leading
+        #ones we will flip the bits of the number and feed the number to priority encoder. This way
+        #we will find the number of leading ones with one priority encoder
         
-        if s_i_within_range:
-            res.append(0)
+        encoder_input = (~s_i) if ( s_i_sign==1 ) else s_i
+        leading_sign_bit_amt = leading_zeros(encoder_input)
+        skip_amt = leading_sign_bit_amt - 1 #how much skipping can be done in one go
+        
+        if (skip_amt > 0):
+            #this check is required not to overshoot the precalculated iteration amount.
+            #implementation of  this part will be expensive so lenghty jumps might be avoided.
+            #The book gives the average amount of jump as 2.67 bits so a 4 bit jump supporting circuit
+            #should be adequate
+            remaining_iterations = lenght-i
+            
+            #if skip amount is greater than the remaining iterations, limit the skip amount to the
+            #remaining iterations.
+            if remaining_iterations < skip_amt:
+                skip_amt = remaining_iterations
+            
+            i += skip_amt
+            #amount of zeros that will be appended is generated in list
+            performed_operations = [0 for i in range(skip_amt)]
+            res += performed_operations
+            s_i <<=skip_amt
         else:
-            if g_e_one_over_two:
-                res.append(1)
-                s_i -= b_shifted
+            if s_i_within_range:
+                res.append(0)
             else:
-                res.append(-1)
-                s_i += b_shifted
+                if g_e_one_over_two:
+                    res.append(1)
+                    s_i -= b_shifted
+                else:
+                    res.append(-1)
+                    s_i += b_shifted
+            s_i <<=1
+            i+=1
         s_i_binary = convert_to_binary(s_i)
         
-        if i == lenght:
-            break
-        else:
-            s_i <<=1
+    
     s_i_sign = 0 if ( (s_i & (1<<31)) ==0 ) else 1 #Redo the si sign just for a good measure
     
     
@@ -104,13 +131,13 @@ def SRT_divide(a,b):
     if s_i_sign:
         result -= 1 #reduce one to compansate
     return result,remainders
-
+'''
 a = 23423
 b = 215
 result,remainders = SRT_divide(a,b)
 print("sonuc %d olmaliydi ama %d bulundu" % (int(a/b),result))
-'''
 
+'''
 for index in range(10000):
     a = random.randint(1, 10000)
     b = random.randint(1, 1000)
@@ -119,7 +146,7 @@ for index in range(10000):
         print("sonuc %d olmaliydi ama %d bulundu" % (a//b,result))
         break
 print("sorunsuz calisti")
-'''
+
 '''
 result,res = SRT_divide(a,b)
 print(','.join(str(x) for x in res))

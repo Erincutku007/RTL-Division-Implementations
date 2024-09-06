@@ -25,6 +25,7 @@ def leading_zeros(binary):
             mask >>1
         else:
             return index
+    return 0
 def redundant_to_standart_binary(number):
     res_reversed = reversed(number) #this is needed because enumerate starts indexing the list from the
     result = 0
@@ -89,11 +90,11 @@ def nonrestoring_divide(a,b):
     #radix conversion can be implemented with a FSM on the fly.
     if result_sign_flag:
         result += 1 if b_sign else -1 #reduce one to compansate
-    return result,res
+    return result,remainders
 '''
 a = 650
 b = -83
-result,res = nonrestoring_divide(a,b)
+result,remainders = nonrestoring_divide(a,b)
 print("sonuc %d olmaliydi ama %d bulundu" % (int(a/b),result))
 '''
 '''
@@ -101,14 +102,14 @@ for index in range(1000):
     print(index)
     a = random.randint(1, 10000)
     b = -random.randint(1, 1000)
-    result,res = nonrestoring_divide(a,b)
+    result,remainders = nonrestoring_divide(a,b)
     if result != int(a/b):
         print("sonuc %d olmaliydi ama %d bulundu" % (a//b,result))
         break
 print("sorunsuz calisti")
 '''
 '''
-result,res = nonrestoring_divide(a,b)
+result,remainders = nonrestoring_divide(a,b)
 print(','.join(str(x) for x in res))
 print("elde edilen sonuc = "+ str(result) + " beklenen sonuc = " + str(a//b))
 '''
