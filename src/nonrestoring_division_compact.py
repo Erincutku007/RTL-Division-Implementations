@@ -38,33 +38,29 @@ def redundant_to_standart_binary(number):
         result += val*power
     return result
 
-def nonrestoring_divide(a,b):
+def nonrestoring_divide_compact(a,b):
     res = []
     remainders = []
     
-    a_zeros = (leading_zeros(abs(a)))
     b_zeros = (leading_zeros(abs(b)))
     
     #leave two 0's at the MSB bit and allign everytihng to the 29'th bit of the register
     #since there will changes of sign in the s_i we we need to keep the sign even after left shift
     #ie if s_i is 011... after left shift we will get 11... which is negative.
-    a_shifted = a << (a_zeros - 2)
     b_shifted = b << (b_zeros - 2)
     
     #number of iterations needed for the algorithm
-    lenght = (31-a_zeros) - (31-b_zeros) + 1
+    lenght = b_zeros-1
     
     #si0 equals to a itself.
-    s_i = a_shifted
+    s_i = a
     #b_shifted_binary = convert_to_binary(b_shifted)
     
     b_sign = 0 if ( (b & (1<<31)) ==0 ) else 1
     a_sign = 0 if ( (a & (1<<31)) ==0 ) else 1
     
     for i in range(lenght):
-        s_i_binary = convert_to_binary(s_i)
-        shamt = (a_zeros - 2) + i
-        remainders.append(s_i >> shamt) #since we are using an redundant representation we have to
+        #since we are using an redundant representation we have to
         #store the values in a list. Refer to the book for the redundant binary representation to
         #binary representation transformation.
         
@@ -92,9 +88,9 @@ def nonrestoring_divide(a,b):
         result += 1 if b_sign else -1 #reduce one to compansate
     return result,remainders
 
-a = 1<<29
-b = 2
-result,remainders = nonrestoring_divide(a,b)
+a = random.randint(0, 1000)
+b = random.randint(0, 50)
+result,remainders = nonrestoring_divide_compact(a,b)
 print("sonuc %d olmaliydi ama %d bulundu" % (int(a/b),result))
 
 '''

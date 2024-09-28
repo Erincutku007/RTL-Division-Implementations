@@ -39,15 +39,16 @@ def redundant_to_standart_binary(number):
     return result
 
 def SRT_divide(a,b):
+    
+    #since we are using an redundant representation we have to
+    #store the values in a list. Refer to the book for the redundant binary representation to
+    #binary representation transformation.
     res = []
     remainders = []
     
     a_zeros = (leading_zeros(abs(a)))
     b_zeros = (leading_zeros(abs(b)))
     
-    #leave two 0's at the MSB bit and allign everytihng to the 29'th bit of the register
-    #since there will changes of sign in the s_i we we need to keep the sign even after left shift
-    #ie if s_i is 011... after left shift we will get 11... which is negative.
     a_shifted = a << (a_zeros - 1) #leaving 1 bit padding for sign bit
     b_shifted = b << (b_zeros - 1) #leaving 1 bit padding for sign bit
     
@@ -138,9 +139,9 @@ result,remainders = SRT_divide(a,b)
 print("sonuc %d olmaliydi ama %d bulundu" % (int(a/b),result))
 
 '''
-for index in range(10000):
-    a = random.randint(1, 10000)
-    b = random.randint(1, 1000)
+for index in range(100):
+    a = random.randint(1, 10)
+    b = random.randint(1, 10000)
     result,remainders = SRT_divide(a,b)
     if result != int(a/b):
         print("sonuc %d olmaliydi ama %d bulundu" % (a//b,result))

@@ -25,7 +25,7 @@ def leading_zeros(binary):
             mask >>1
         else:
             return index
-        return 0
+    return 0
 def redundant_to_standart_binary(number):
     res_reversed = reversed(number) #this is needed because enumerate starts indexing the list from the
     result = 0
@@ -45,9 +45,6 @@ def SRT_divide(a,b):
     a_zeros = (leading_zeros(abs(a)))
     b_zeros = (leading_zeros(abs(b)))
     
-    #leave two 0's at the MSB bit and allign everytihng to the 29'th bit of the register
-    #since there will changes of sign in the s_i we we need to keep the sign even after left shift
-    #ie if s_i is 011... after left shift we will get 11... which is negative.
     a_shifted = a << (a_zeros - 1) #leaving 1 bit padding for sign bit
     b_shifted = b << (b_zeros - 1) #leaving 1 bit padding for sign bit
     
@@ -104,7 +101,7 @@ def SRT_divide(a,b):
     if s_i_sign:
         result -= 1 #reduce one to compansate
     return result,remainders
-
+'''
 a = 23423
 b = 215
 result,remainders = SRT_divide(a,b)
@@ -119,7 +116,7 @@ for index in range(10000):
         print("sonuc %d olmaliydi ama %d bulundu" % (a//b,result))
         break
 print("sorunsuz calisti")
-'''
+
 '''
 result,res = SRT_divide(a,b)
 print(','.join(str(x) for x in res))
